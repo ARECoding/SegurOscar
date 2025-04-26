@@ -65,9 +65,30 @@ namespace SegurOsCar.Services
             return clientDto;
         }
 
-        public Task<ClientDto> GetById(int id)
+        public async Task<ClientDto> GetById(int id)
         {
-            throw new NotImplementedException();
+            var client = await _clientRepository.GetById(id);
+            if (client == null)
+            {
+                return null;
+            }
+            var clientDto = new ClientDto
+            {
+                Id = client.Id,
+                Name = client.Name,
+                Email = client.Email,
+                Vehicles = client.VehicleList?.Select(
+                    vehicle =>
+                    new VehicleDto
+                    {
+                        LicencePlate = vehicle.LicencePlate,
+                        ModelYear = vehicle.ModelYear,
+                        Brand = vehicle.Brand,
+                        Model = vehicle.Model,
+                        Kilometers = vehicle.Kilometers
+                    }).ToList() ?? new List<VehicleDto>()
+            };
+            return clientDto;
         }
 
         public Task Update(int id, ClientUpdateDto updateDto)

@@ -23,9 +23,7 @@ namespace SegurOsCar.Repository
             => await _secureContext.Clients.ToListAsync();
 
         public async Task<Client> GetById(int id)
-        {
-            throw new NotImplementedException();
-        }
+            => await _secureContext.Clients.FirstOrDefaultAsync(client => client.Id == id.ToString());
 
         public async Task Save()
             => await _secureContext.SaveChangesAsync();

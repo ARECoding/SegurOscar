@@ -22,9 +22,15 @@ namespace SegurOsCar.Controllers
             var clientDto = await _clientService.Get();
             return Ok(clientDto);
         }
+        [HttpGet("id/{id}")]
+        public async Task<IActionResult> GetOneClient(int id) 
+        {
+            var clientDto = await _clientService.GetById(id);
+            return clientDto == null ? NotFound() : Ok(clientDto);
+        }
 
         [HttpPost]
-        public async Task<IActionResult> Add(ClientInsertDto clientInsertDto) 
+        public async Task<IActionResult> AddClients(ClientInsertDto clientInsertDto) 
         {
             await _clientService.Add(clientInsertDto);
             return Created();
