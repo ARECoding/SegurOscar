@@ -27,10 +27,8 @@ namespace SegurOsCar.Repository
             throw new NotImplementedException();
         }
 
-        public Task Save()
-        {
-            throw new NotImplementedException();
-        }
+        public async Task Save()
+            => await _secureContext.SaveChangesAsync();
 
         public IEnumerable<Client> Search(Func<Client, bool> filter)
         {

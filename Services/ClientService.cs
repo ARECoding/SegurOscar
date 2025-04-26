@@ -33,6 +33,7 @@ namespace SegurOsCar.Services
                 }).ToList<Vehicle>()
             };
             await _clientRepository.Add(newClient);
+            await _clientRepository.Save();
         }
 
         public Task Delete(int id)
@@ -49,7 +50,7 @@ namespace SegurOsCar.Services
                     Id = client.Id,
                     Name = client.Name,
                     Email = client.Email,
-                    Vehicles = client.VehicleList.Select(
+                    Vehicles = client.VehicleList?.Select(
                         vehicle =>
                         new VehicleDto
                         {
@@ -58,7 +59,7 @@ namespace SegurOsCar.Services
                             Brand = vehicle.Brand,
                             Model = vehicle.Model,
                             Kilometers = vehicle.Kilometers
-                        }).ToList()
+                        }).ToList() ?? new List<VehicleDto>()
 
                 });
             return clientDto;

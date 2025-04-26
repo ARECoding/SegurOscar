@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SegurOsCar")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3f5677684854b99afa851537ab72dacf934ee8b2")]
 [assembly: System.Reflection.AssemblyProductAttribute("SegurOsCar")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SegurOsCar")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
