@@ -1,0 +1,28 @@
+[
+  {
+    "ContainingType": "SegurOsCar.Controllers.ClientController",
+    "Method": "Add",
+    "RelativePath": "api/Client",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "clientInsertDto",
+        "Type": "SegurOsCar.DTOs.ClientInsertDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SegurOsCar.Controllers.ClientController",
+    "Method": "GetClients",
+    "RelativePath": "api/Client/all",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  }
+]

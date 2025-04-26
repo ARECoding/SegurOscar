@@ -1,0 +1,6 @@
+@SegurOscar_HostAddress = http://localhost:5137
+
+GET {{SegurOscar_HostAddress}}Home/
+Accept: application/json
+
+###
