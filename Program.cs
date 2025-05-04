@@ -4,12 +4,12 @@ using SegurOsCar.Services;
 using SegurOsCar.DTOs;
 using SegurOsCar.Repository;
 using SegurOsCar.Utilities;
+using FluentValidation;
+using SegurOsCar.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 // Inyeccion de dependencias
-//builder.Services.AddSingleton<>();
 
 // SQL Server connection with Entity Framework
 builder.Services.AddDbContext<SecureContext>(options =>
@@ -38,10 +38,15 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.Converters.Add(new VehicleJsonDeserializer());
     });
 
+// Validators
+
+builder.Services.AddScoped<IValidator<ClientInsertDto>, ClientInsertValidator>();
+builder.Services.AddScoped<IValidator<VehicleInsertDto>, VehicleInsertValidator>();
+
+
 
 // Repository
 builder.Services.AddScoped<IRepository<Client>, ClientRepository>();
-//builder.Services.AddScoped<IRepository<Vehicle>, VehicleRepository>();
 
     var app = builder.Build();
     if (app.Environment.IsDevelopment())

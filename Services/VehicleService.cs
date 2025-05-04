@@ -77,7 +77,7 @@ namespace SegurOsCar.Services
         }
 
 
-        public async Task<IEnumerable<VehicleDto?>> Get()
+        public async Task<IEnumerable<VehicleDto>> Get()
         {
             var vehicle = await _vehicleRepository.Get();
 

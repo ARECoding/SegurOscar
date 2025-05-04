@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using SegurOsCar.Services;
 using SegurOsCar.DTOs;
+using FluentValidation;
 
 namespace SegurOsCar.Controllers
 {
@@ -10,9 +11,11 @@ namespace SegurOsCar.Controllers
     public class ClientController : ControllerBase
     {
         private readonly ICommonServices<ClientDto, ClientInsertDto, ClientUpdateDto> _clientService;
-        public ClientController([FromKeyedServices("clientService")] ICommonServices<ClientDto, ClientInsertDto, ClientUpdateDto> clientService)
+        private readonly IValidator<ClientInsertDto> _clientInsertValidator;
+        public ClientController([FromKeyedServices("clientService")] ICommonServices<ClientDto, ClientInsertDto, ClientUpdateDto> clientService, IValidator<ClientInsertDto> clientInsertValidator)
         {
             _clientService = clientService;
+            _clientInsertValidator = clientInsertValidator;
         }
 
         [HttpGet("all")]
@@ -32,6 +35,9 @@ namespace SegurOsCar.Controllers
         [HttpPost]
         public async Task<IActionResult> AddClients(ClientInsertDto clientInsertDto)
         {
+            var clientValidationResult = await _clientInsertValidator.ValidateAsync(clientInsertDto);
+            if(!clientValidationResult.IsValid)
+                return BadRequest(clientValidationResult.Errors[0].ErrorMessage);
             await _clientService.Add(clientInsertDto);
             return Created();
         }
