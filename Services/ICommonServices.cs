@@ -4,10 +4,10 @@
     {
         public List<string> Errors { get; }
         Task<IEnumerable<T>> Get();
-        Task<T> GetById(int id);
+        Task<T?> GetById(string id);
         Task Add(TInsert insertDto);
-        Task Update(int id, TUpdate updateDto);
-        Task Delete(int id);
+        Task <T?> Update(string id, TUpdate updateDto);
+        Task <T?> Delete(string id);
 
         bool Validate(TInsert dto);
 

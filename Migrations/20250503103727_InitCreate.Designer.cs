@@ -11,8 +11,8 @@ using SegurOsCar.Models;
 namespace SegurOsCar.Migrations
 {
     [DbContext(typeof(SecureContext))]
-    [Migration("20250425201432_InitMigration")]
-    partial class InitMigration
+    [Migration("20250503103727_InitCreate")]
+    partial class InitCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -26,7 +26,7 @@ namespace SegurOsCar.Migrations
 
             modelBuilder.Entity("SegurOsCar.Models.Client", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<string>("ClientId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Address")
@@ -43,7 +43,7 @@ namespace SegurOsCar.Migrations
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("ClientId");
 
                     b.ToTable("Clients");
                 });
@@ -58,6 +58,7 @@ namespace SegurOsCar.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ClientId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Discriminator")
@@ -103,13 +104,11 @@ namespace SegurOsCar.Migrations
             modelBuilder.Entity("SegurOsCar.Models.Vehicle", b =>
                 {
                     b.HasOne("SegurOsCar.Models.Client", null)
-                        .WithMany("VehicleList")
-                        .HasForeignKey("ClientId");
-                });
-
-            modelBuilder.Entity("SegurOsCar.Models.Client", b =>
-                {
-                    b.Navigation("VehicleList");
+                        .WithMany()
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_Car_ClientId");
                 });
 #pragma warning restore 612, 618
         }

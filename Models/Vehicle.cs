@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-namespace SegurOsCar.Models
+﻿namespace SegurOsCar.Models
 {
     public abstract class Vehicle
     {
@@ -10,5 +9,7 @@ namespace SegurOsCar.Models
         public string Model { get; set; }
 
         public int Kilometers { get; set; }
+        
+        public required string ClientId { get; set; }
     }
 }

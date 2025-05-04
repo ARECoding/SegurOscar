@@ -169,5 +169,5 @@ C:\Users\Espin\Downloads\Yo\Projects\Learning\Dotnet\practice02\SegurOscar\obj\D
 C:\Users\Espin\Downloads\Yo\Projects\Learning\Dotnet\practice02\SegurOscar\obj\Debug\net8.0\SegurOsCar.pdb
 C:\Users\Espin\Downloads\Yo\Projects\Learning\Dotnet\practice02\SegurOscar\obj\Debug\net8.0\SegurOsCar.genruntimeconfig.cache
 C:\Users\Espin\Downloads\Yo\Projects\Learning\Dotnet\practice02\SegurOscar\obj\Debug\net8.0\ref\SegurOsCar.dll
-C:\Users\Espin\Downloads\Yo\Projects\Learning\Dotnet\practice02\SegurOscar\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 C:\Users\Espin\Downloads\Yo\Projects\Learning\Dotnet\practice02\SegurOscar\obj\Debug\net8.0\SegurOsCar.sourcelink.json
+C:\Users\Espin\Downloads\Yo\Projects\Learning\Dotnet\practice02\SegurOscar\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

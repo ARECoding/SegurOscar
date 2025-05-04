@@ -13,17 +13,21 @@ namespace SegurOsCar.Utilities
             using (var document = JsonDocument.ParseValue(ref reader))
             {
                 var jsonObject = document.RootElement;
-                
-                var type = jsonObject.TryGetProperty("Type", out var typeProperty) 
+
+                var type = jsonObject.TryGetProperty("Type", out var typeProperty)
                     ? jsonObject.GetProperty("Type").GetString() : null;
                 return type switch
                 {
-                    "Car" => JsonSerializer.Deserialize<Car>(jsonObject.GetRawText(), options),
+                    "Car" => DeserializeCar(options, jsonObject),
                     null => throw new JsonException("Missing 'Type' property in JSON."),
                     _ => throw new NotSupportedException($"Tipo de vehiculo no soportado: {type}")
                 };
             }
-            
+        }
+
+        private static Car? DeserializeCar(JsonSerializerOptions options, JsonElement jsonObject)
+        {
+            return JsonSerializer.Deserialize<Car>(jsonObject.GetRawText(), options);
         }
 
         public override void Write(Utf8JsonWriter writer, Vehicle value, JsonSerializerOptions options)

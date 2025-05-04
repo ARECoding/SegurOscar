@@ -1,6 +1,6 @@
 ﻿namespace SegurOsCar.DTOs
 {
-    public class VehicleInsertDto
+    public class VehicleUpdateDto
     {
 
         public required string LicencePlate { get; set; }
@@ -10,7 +10,5 @@
         public string? Model { get; set; }
 
         public int Kilometers { get; set; }
-
-        public required string ClientId { get; set; }
     }
 }

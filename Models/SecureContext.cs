@@ -19,23 +19,19 @@ namespace SegurOsCar.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<Client>(c =>
             {
-                c.HasKey(cId => cId.Id);
+                c.HasKey(cId => cId.ClientId);
             });
 
             modelBuilder.Entity<Vehicle>(car =>
             {
                 car.HasKey(cr => cr.LicencePlate);
+                car.HasOne<Client>()
+                    .WithMany()
+                    .HasForeignKey(cr => cr.ClientId)
+                    .HasConstraintName("FK_Car_ClientId");
             });
-
-            modelBuilder.Entity<Client>(clientEnt =>
-            {
-                clientEnt.HasKey(c => c.Id);
-                clientEnt.HasMany(c => c.VehicleList);
-            });
-            
         }
     }
 }

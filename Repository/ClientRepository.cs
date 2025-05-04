@@ -1,41 +1,35 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SegurOsCar.Models;
-using SegurOsCar.DTOs;
 namespace SegurOsCar.Repository
 {
     public class ClientRepository : IRepository<Client>
     {
-        private SecureContext _secureContext;
+        private readonly SecureContext _secureContext;
 
         public ClientRepository(SecureContext secureContext)
         {
             _secureContext = secureContext;         
         }
-        public async Task Add(Client entity)
-            => await _secureContext.Clients.AddAsync(entity);
+        public async Task Add(Client client)
+            => await _secureContext.Clients.AddAsync(client);
 
-        public async void Delete(Client entity)
-        {
-            throw new NotImplementedException();
-        }
+        public void Delete(Client client)
+            => _secureContext.Clients.Remove(client);
 
         public async Task<IEnumerable<Client>> Get() 
             => await _secureContext.Clients.ToListAsync();
 
-        public async Task<Client> GetById(int id)
-            => await _secureContext.Clients.FirstOrDefaultAsync(client => client.Id == id.ToString());
+        public async Task<Client?> GetById(string id) 
+            => await _secureContext.Clients.FirstOrDefaultAsync(client => client.ClientId == id);
+
 
         public async Task Save()
             => await _secureContext.SaveChangesAsync();
 
-        public IEnumerable<Client> Search(Func<Client, bool> filter)
+        public void Update(Client client)
         {
-            throw new NotImplementedException();
-        }
-
-        public void Update(Client entity)
-        {
-            throw new NotImplementedException();
+            _secureContext.Clients.Attach(client);
+            _secureContext.Entry(client).State = EntityState.Modified;
         }
     }
 }
