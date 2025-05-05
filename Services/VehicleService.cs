@@ -1,4 +1,6 @@
-﻿using SegurOsCar.DTOs;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using SegurOsCar.DTOs;
 using SegurOsCar.Models;
 using SegurOsCar.Repository;
 
@@ -8,23 +10,17 @@ namespace SegurOsCar.Services
     {
         public List<string> Errors => throw new NotImplementedException();
         private readonly VehicleRepository _vehicleRepository;
-
-        public VehicleService(VehicleRepository vehicleRepository)
+        private readonly IMapper _mapper;
+        public VehicleService(VehicleRepository vehicleRepository, IMapper mapper)
         {
             _vehicleRepository = vehicleRepository;
+            _mapper = mapper;
         }
 
         public async Task Add(VehicleInsertDto vehicleInsertDto)
         {
-            var vehicleToSend = new Car
-            {
-                LicencePlate = vehicleInsertDto.LicencePlate,
-                Brand = vehicleInsertDto.Brand,
-                Model = vehicleInsertDto.Model,
-                ModelYear = vehicleInsertDto.ModelYear,
-                Kilometers = vehicleInsertDto.Kilometers,
-                ClientId = vehicleInsertDto.ClientId,
-            };
+            var vehicleToSend = _mapper.Map<Car>(vehicleInsertDto);
+
 
             await _vehicleRepository.Add(vehicleToSend);
             await _vehicleRepository.Save();
@@ -35,15 +31,18 @@ namespace SegurOsCar.Services
             foreach(var vehicleToAdd in vehiclesToAdd)
             {
                 
-                await Add(new VehicleInsertDto
-                {
-                    LicencePlate = vehicleToAdd.LicencePlate,
-                    ModelYear = vehicleToAdd.ModelYear,
-                    Model = vehicleToAdd.Model,
-                    Brand = vehicleToAdd.Brand,
-                    Kilometers = vehicleToAdd.Kilometers,
-                    ClientId = ownerId
-                });
+                await Add(
+                    //_mapper.Map<VehicleInsertDto>(vehicleToAdd)
+                    new VehicleInsertDto
+                    {
+                        LicencePlate = vehicleToAdd.LicencePlate,
+                        ModelYear = vehicleToAdd.ModelYear,
+                        Model = vehicleToAdd.Model,
+                        Brand = vehicleToAdd.Brand,
+                        Kilometers = vehicleToAdd.Kilometers,
+                        ClientId = ownerId
+                    }
+                    );
             }
         }
 
@@ -52,14 +51,8 @@ namespace SegurOsCar.Services
             var vehicle = await _vehicleRepository.GetById(vehicleId);
             if (vehicle == null)
                 return null;
-            var vehicleDto = new VehicleDto
-            {
-                LicencePlate = vehicle.LicencePlate,
-                ModelYear = vehicle.ModelYear,
-                Model = vehicle.Model,
-                Brand = vehicle.Brand,
-                Kilometers = vehicle.Kilometers,
-            };
+            var vehicleDto = _mapper.Map<VehicleDto>(vehicle);
+           
             _vehicleRepository.Delete(vehicle);
             await _vehicleRepository.Save();
             return vehicleDto;
@@ -81,14 +74,8 @@ namespace SegurOsCar.Services
         {
             var vehicle = await _vehicleRepository.Get();
 
-            return vehicle.Select(v => new VehicleDto
-            {
-                LicencePlate = v.LicencePlate,
-                ModelYear = v.ModelYear,
-                Model = v.Model,
-                Brand = v.Brand,
-                Kilometers = v.Kilometers
-            });
+            return vehicle.Select(v =>  _mapper.Map<VehicleDto>(vehicle));
+ 
         }
 
         public async Task<VehicleDto?> GetById(string vehicleId)
@@ -98,14 +85,8 @@ namespace SegurOsCar.Services
             if (vehicle == null)
                 return null;
 
-            var vehicleDto = new VehicleDto
-            {
-                LicencePlate = vehicle.LicencePlate,
-                ModelYear = vehicle.ModelYear,
-                Model = vehicle.Model,
-                Brand = vehicle.Brand,
-                Kilometers = vehicle.Kilometers
-            };
+            var vehicleDto = _mapper.Map<VehicleDto>(vehicleId);    
+
             return vehicleDto;
         }
 
@@ -114,14 +95,8 @@ namespace SegurOsCar.Services
             var vehicles = await _vehicleRepository.GetVehicleListByOwner(owner);
             if (vehicles == null)
                 return null;
-            var vehicleDtos = vehicles.Select(v => new VehicleDto
-            {
-                LicencePlate = v.LicencePlate,
-                ModelYear = v.ModelYear,
-                Model = v.Model,
-                Brand = v.Brand,
-                Kilometers = v.Kilometers
-            }).ToList();
+            var vehicleDtos = vehicles.Select(v => _mapper.Map<VehicleDto>(v)).ToList();
+
             return vehicleDtos;
         }
 
@@ -130,31 +105,36 @@ namespace SegurOsCar.Services
             var vehicle = await _vehicleRepository.GetById(vehicleId);
             if (vehicle == null)
                 return null;
-
+            //vehicle = _mapper.Map<Car>(vehicleUpdateDto);
             vehicle.ModelYear = vehicleUpdateDto.ModelYear;
             vehicle.Model = vehicleUpdateDto.Model ?? vehicle.Model;
             vehicle.Brand = vehicleUpdateDto.Brand ?? vehicle.Brand;
             vehicle.Kilometers = vehicleUpdateDto.Kilometers;
+
             _vehicleRepository.Update(vehicle);
             await _vehicleRepository.Save();
 
-            var vehicleUpdatedDto = new VehicleDto
-            {
-                LicencePlate = vehicle.LicencePlate,
-                ModelYear = vehicle.ModelYear,
-                Model = vehicle.Model,
-                Brand = vehicle.Brand,
-                Kilometers = vehicle.Kilometers
-            };
+            var vehicleUpdatedDto = _mapper.Map<VehicleDto>(vehicle);
+
             return vehicleUpdatedDto;
         }
 
-        public async Task<IEnumerable<VehicleDto>> UpdateVehicleList(ICollection<VehicleUpdateDto> vehicleListToUpdate)
+        public async Task<IEnumerable<VehicleDto>> UpdateVehicleList(ICollection<VehicleUpdateDto> vehicleListToUpdate, string owner = null)
         {
             ICollection<VehicleDto> vehicleList = new List<VehicleDto>();
             foreach (var vehicleToUpdate in vehicleListToUpdate)
             {
-                vehicleList.Add(await Update(vehicleToUpdate.LicencePlate, vehicleToUpdate));
+                var a = await Update(vehicleToUpdate.LicencePlate, vehicleToUpdate);
+                if (a != null)
+                    vehicleList.Add(await Update(vehicleToUpdate.LicencePlate, vehicleToUpdate));
+                else
+                {
+                    var vehicleToAdd = _mapper.Map<VehicleInsertDto>(vehicleToUpdate);
+                    vehicleToAdd.ClientId = owner;
+                    await Add(vehicleToAdd);
+                    vehicleList.Add(_mapper.Map<VehicleDto>(vehicleToAdd));
+                }
+                    
             }
             return vehicleList;
         }

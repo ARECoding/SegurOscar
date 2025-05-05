@@ -1,10 +1,11 @@
-using Microsoft.EntityFrameworkCore;
-using SegurOsCar.Models;
-using SegurOsCar.Services;
-using SegurOsCar.DTOs;
-using SegurOsCar.Repository;
-using SegurOsCar.Utilities;
 using FluentValidation;
+using Microsoft.EntityFrameworkCore;
+using SegurOsCar.AutoMappers;
+using SegurOsCar.DTOs;
+using SegurOsCar.Models;
+using SegurOsCar.Repository;
+using SegurOsCar.Services;
+using SegurOsCar.Utilities;
 using SegurOsCar.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -43,7 +44,8 @@ builder.Services.AddControllers()
 builder.Services.AddScoped<IValidator<ClientInsertDto>, ClientInsertValidator>();
 builder.Services.AddScoped<IValidator<VehicleInsertDto>, VehicleInsertValidator>();
 
-
+// Mappers
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 // Repository
 builder.Services.AddScoped<IRepository<Client>, ClientRepository>();

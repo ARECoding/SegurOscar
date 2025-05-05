@@ -1,4 +1,5 @@
-﻿using SegurOsCar.DTOs;
+﻿using AutoMapper;
+using SegurOsCar.DTOs;
 using SegurOsCar.Models;
 using SegurOsCar.Repository;
 using System.Linq;
@@ -9,28 +10,32 @@ namespace SegurOsCar.Services
     {
         private readonly IRepository<Client> _clientRepository;
         private readonly VehicleService _vehicleService;
+        private readonly IMapper _mapper;
 
-        public ClientService(IRepository<Client> clientRepository, VehicleService vehicleService ) 
+        public ClientService(IRepository<Client> clientRepository, VehicleService vehicleService , IMapper mapper) 
         { 
             _clientRepository = clientRepository;
             _vehicleService = vehicleService;
+            _mapper = mapper;
         }
 
         public List<string> Errors => throw new NotImplementedException();
 
         public async Task Add(ClientInsertDto clientInsertDto)
         {
-            
-            var newClient = new Client()
-            {
-                ClientId = clientInsertDto.Id,
-                Name = clientInsertDto.Name,
-                Email = clientInsertDto.Email,
-                Address = clientInsertDto.Address,
-            };
+
+            var newClient = _mapper.Map<Client>(clientInsertDto);
+
             await _clientRepository.Add(newClient);
-            await _clientRepository.Save();
-            await _vehicleService.AddVehicleList(clientInsertDto.Id, clientInsertDto.Vehicles);
+            try
+            {
+                await _vehicleService.AddVehicleList(clientInsertDto.Id, clientInsertDto.Vehicles);
+                await _clientRepository.Save();
+            } catch(Exception ex)
+            {
+                // Handle exception
+                throw;
+            }
         }
 
         public async Task<ClientDto?> Delete(string id) 
@@ -42,14 +47,9 @@ namespace SegurOsCar.Services
             if (vehicles == null)
                 return null;
 
-            var clientDto = new ClientDto
-            {
-                Id = client.ClientId,
-                Name = client.Name,
-                Email = client.Email ?? string.Empty,
-                Address = client.Address ?? string.Empty,
-                Vehicles = vehicles
-            };
+            var clientDto = _mapper.Map<ClientDto>(client);
+ 
+            clientDto.Vehicles = vehicles;
             _clientRepository.Delete(client);
             await _clientRepository.Save();
             return clientDto;
@@ -60,13 +60,14 @@ namespace SegurOsCar.Services
             var clientList = await _clientRepository.Get();
 
             var clientDtoList = clientList.Select(async client
-                => new ClientDto
-                {
-                    Id = client.ClientId,
-                    Name = client.Name,
-                    Email = client.Email ?? string.Empty,
-                    Vehicles = (await _vehicleService.GetVehicleListByOwner(client.ClientId)).ToList()
-                });
+            //=> _mapper.Map<ClientDto>(client);
+            => new ClientDto
+            {
+                Id = client.ClientId,
+                Name = client.Name,
+                Email = client.Email ?? string.Empty,
+                Vehicles = (await _vehicleService.GetVehicleListByOwner(client.ClientId)).ToList()
+            });
             return [.. clientDtoList.Where(clientElem => clientElem != null).Select(clientElem => clientElem.Result)];
         }
 
@@ -76,13 +77,8 @@ namespace SegurOsCar.Services
             if (client == null)
                 return null;
             var vehicleList = await _vehicleService.GetVehicleListByOwner(client.ClientId);
-            var clientDto = new ClientDto
-            {
-                Id = client.ClientId,
-                Name = client.Name,
-                Email = client.Email ?? string.Empty,
-                Vehicles = (ICollection<VehicleDto>) await _vehicleService.GetVehicleListByOwner(client.ClientId)
-            };
+            var clientDto = _mapper.Map<ClientDto>(client);
+            clientDto.Vehicles = (ICollection<VehicleDto>)await _vehicleService.GetVehicleListByOwner(client.ClientId);
             return clientDto;
         }
 
@@ -95,17 +91,12 @@ namespace SegurOsCar.Services
             client.Email = clientToUpdate.Email;
             client.Address = clientToUpdate.Address;
 
-            var updatedVehicleList = await _vehicleService.UpdateVehicleList((ICollection<VehicleUpdateDto>)clientToUpdate.Vehicles);
+            var updatedVehicleList = await _vehicleService.UpdateVehicleList((ICollection<VehicleUpdateDto>)clientToUpdate.Vehicles, id);
             if(updatedVehicleList == null)
                 return null;
-            var clientDto = new ClientDto
-            {
-                Id = client.ClientId,
-                Name = client.Name,
-                Email = client.Email ?? string.Empty,
-                Address = client.Address ?? string.Empty,
-                Vehicles = (updatedVehicleList).ToList()
-            };
+            var clientDto = _mapper.Map<ClientDto>(client);
+            clientDto.Vehicles = updatedVehicleList.ToList();
+
             return clientDto;
         }
 

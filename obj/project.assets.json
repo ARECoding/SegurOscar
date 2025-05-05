@@ -2,6 +2,22 @@
   "version": 3,
   "targets": {
     "net8.0": {
+      "AutoMapper/14.0.0": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Extensions.Options": "8.0.0"
+        },
+        "compile": {
+          "lib/net8.0/AutoMapper.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/AutoMapper.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "Azure.Core/1.38.0": {
         "type": "package",
         "dependencies": {
@@ -47,7 +63,7 @@
           }
         }
       },
-      "FluentValidation/11.11.0": {
+      "FluentValidation/12.0.0": {
         "type": "package",
         "compile": {
           "lib/net8.0/FluentValidation.dll": {
@@ -1708,6 +1724,21 @@
     }
   },
   "libraries": {
+    "AutoMapper/14.0.0": {
+      "sha512": "OC+1neAPM4oCCqQj3g2GJ2shziNNhOkxmNB9cVS8jtx4JbgmRzLcUOxB9Tsz6cVPHugdkHgCaCrTjjSI0Z5sCQ==",
+      "type": "package",
+      "path": "automapper/14.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "automapper.14.0.0.nupkg.sha512",
+        "automapper.nuspec",
+        "icon.png",
+        "lib/net8.0/AutoMapper.dll",
+        "lib/net8.0/AutoMapper.xml"
+      ]
+    },
     "Azure.Core/1.38.0": {
       "sha512": "IuEgCoVA0ef7E4pQtpC3+TkPbzaoQfa77HlfJDmfuaJUCVJmn7fT0izamZiryW5sYUFKizsftIxMkXKbgIcPMQ==",
       "type": "package",
@@ -1746,29 +1777,19 @@
         "lib/netstandard2.0/Azure.Identity.xml"
       ]
     },
-    "FluentValidation/11.11.0": {
-      "sha512": "cyIVdQBwSipxWG8MA3Rqox7iNbUNUTK5bfJi9tIdm4CAfH71Oo5ABLP4/QyrUwuakqpUEPGtE43BDddvEehuYw==",
+    "FluentValidation/12.0.0": {
+      "sha512": "8NVLxtMUXynRHJIX3Hn1ACovaqZIJASufXIIFkD0EUbcd5PmMsL1xUD5h548gCezJ5BzlITaR9CAMrGe29aWpA==",
       "type": "package",
-      "path": "fluentvalidation/11.11.0",
+      "path": "fluentvalidation/12.0.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "README.md",
         "fluent-validation-icon.png",
-        "fluentvalidation.11.11.0.nupkg.sha512",
+        "fluentvalidation.12.0.0.nupkg.sha512",
         "fluentvalidation.nuspec",
-        "lib/net5.0/FluentValidation.dll",
-        "lib/net5.0/FluentValidation.xml",
-        "lib/net6.0/FluentValidation.dll",
-        "lib/net6.0/FluentValidation.xml",
-        "lib/net7.0/FluentValidation.dll",
-        "lib/net7.0/FluentValidation.xml",
         "lib/net8.0/FluentValidation.dll",
-        "lib/net8.0/FluentValidation.xml",
-        "lib/netstandard2.0/FluentValidation.dll",
-        "lib/netstandard2.0/FluentValidation.xml",
-        "lib/netstandard2.1/FluentValidation.dll",
-        "lib/netstandard2.1/FluentValidation.xml"
+        "lib/net8.0/FluentValidation.xml"
       ]
     },
     "Humanizer.Core/2.14.1": {
@@ -5167,7 +5188,8 @@
   },
   "projectFileDependencyGroups": {
     "net8.0": [
-      "FluentValidation >= 11.11.0",
+      "AutoMapper >= 14.0.0",
+      "FluentValidation >= 12.0.0",
       "Microsoft.EntityFrameworkCore >= 9.0.4",
       "Microsoft.EntityFrameworkCore.Design >= 9.0.4",
       "Microsoft.EntityFrameworkCore.SqlServer >= 9.0.4",
@@ -5225,9 +5247,13 @@
       "net8.0": {
         "targetAlias": "net8.0",
         "dependencies": {
+          "AutoMapper": {
+            "target": "Package",
+            "version": "[14.0.0, )"
+          },
           "FluentValidation": {
             "target": "Package",
-            "version": "[11.11.0, )"
+            "version": "[12.0.0, )"
           },
           "Microsoft.EntityFrameworkCore": {
             "target": "Package",

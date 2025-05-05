@@ -2,7 +2,7 @@
 {
     public abstract class Vehicle
     {
-        public string LicencePlate { get; set; }
+        public required string LicencePlate { get; set; }
         public int ModelYear { get; set; }
         public string Brand { get; set; }
 
